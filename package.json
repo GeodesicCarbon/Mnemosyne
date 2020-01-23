@@ -1,0 +1,19 @@
+{
+  "name": "mnemosyne",
+  "version": "0.0.1",
+  "description": "Notekeeping calendar app, created for the fullstackopen 2019 MOOC-course",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GeodesicCarbon/Mnemosyne.git"
+  },
+  "author": "Vadim Gurkalov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GeodesicCarbon/Mnemosyne/issues"
+  },
+  "homepage": "https://github.com/GeodesicCarbon/Mnemosyne#readme"
+}

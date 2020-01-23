@@ -1,0 +1,37 @@
+Table Note {
+  _id objectID PK
+  dateCreated datetime
+  dateDue datetime
+  noteItem NoteItem
+  noteCategory Category
+  noteTags Tag
+  repeatability enum
+  user User
+}
+Table NoteItem {
+  itemName string
+  isDone bool
+}
+Table Category {
+  _id objectID PK
+  name string
+}
+Table Tag {
+  _id objectID PK
+  tag string
+}
+Table User {
+  _id objectID PK
+  name string
+  passwordHash string
+  email string
+  calendarAPI string
+}
+
+Ref: "Note"."noteItem" < "NoteItem"."itemName"
+
+Ref: "Note"."noteCategory" > "Category"."_id"
+
+Ref: "Note"."user" - "User"."_id"
+
+Ref: "Note"."noteTags" > "Tag"."_id"
