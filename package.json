@@ -4,7 +4,10 @@
   "description": "Notekeeping calendar app, created for the fullstackopen 2019 MOOC-course",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "cross-env NODE_ENV=production node index.js",
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
+    "watch": "cross-env NODE_ENV=development nodemon index.js",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -15,5 +18,20 @@
   "bugs": {
     "url": "https://github.com/GeodesicCarbon/Mnemosyne/issues"
   },
-  "homepage": "https://github.com/GeodesicCarbon/Mnemosyne#readme"
+  "homepage": "https://github.com/GeodesicCarbon/Mnemosyne#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.8.9",
+    "mongoose-unique-validator": "^2.0.3"
+  },
+  "devDependencies": {
+    "cross-env": "^6.0.3",
+    "cypress": "^3.8.2",
+    "eslint": "^6.8.0",
+    "jest": "^25.1.0",
+    "nodemon": "^2.0.2"
+  }
 }
