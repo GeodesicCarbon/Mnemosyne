@@ -26,7 +26,7 @@ const noteSchema = mongoose.Schema({
       required: true
     },
     isDone: {
-      type: Bool,
+      type: Boolean,
       required: true,
       default: false,
     }
@@ -54,7 +54,7 @@ const noteSchema = mongoose.Schema({
 })
 
 // Luodaan funktio joka siivoaa objektin ja palauttaa sen JSON-muodossa
-userSchema.set('toJSON', {
+noteSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
