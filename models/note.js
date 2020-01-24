@@ -1,7 +1,7 @@
 // Ladataan tarvittavat moduulit
 const mongoose = require('mongoose')
 
-// Luodaan mongoose-skeema muistiinpanoille ja palautetaan siitä malli
+// Luodaan Enum eri toistotyypeille
 const repeatability = {
   NEVER: 'never',
   ONCE: 'once',
@@ -11,6 +11,7 @@ const repeatability = {
   YEARLY: 'yearly'
 }
 
+// Luodaan mongoose-skeema muistiinpanoille ja palautetaan siitä malli
 const noteSchema = mongoose.Schema({
   dateCreated: {
     type: Date,
