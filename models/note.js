@@ -2,6 +2,15 @@
 const mongoose = require('mongoose')
 
 // Luodaan mongoose-skeema muistiinpanoille ja palautetaan siitä malli
+const repeatability = {
+  NEVER: 'never',
+  ONCE: 'once',
+  WEEKLY: 'weekly',
+  MONTHLY: 'monthly',
+  BIANNUAL: 'biannual',
+  YEARLY: 'yearly'
+}
+
 const noteSchema = mongoose.Schema({
   dateCreated: {
     type: Date,
@@ -10,9 +19,40 @@ const noteSchema = mongoose.Schema({
   dateDue: {
     type: Date,
     required: true
+  },
+  noteItem: [{
+    itemName: {
+      type: String,
+      required: true
+    },
+    isDone: {
+      type: Bool,
+      required: true,
+      default: false,
+    }
+  }],
+  noteCategory: {
+    type: String, // placeholder Category-skeemalle
+    required: true,
+    default: 'Misc'
+  },
+  noteTags: [{
+    type: String, // placeholder Tag-skeemalle
+    required: true
+  }],
+  repeatability: {
+    type: String,
+    enum: repeatability.values(),
+    required: true,
+    default: repeatability.NEVER
+  },
+  user: {
+    type: String, //placeholder käyttäjäskeemalle
+    required: true,
+    default: 'Test User'
   }
 })
- 
+
 // Luodaan funktio joka siivoaa objektin ja palauttaa sen JSON-muodossa
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
