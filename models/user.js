@@ -17,9 +17,11 @@ const userSchema = mongoose.Schema({
   passwordHash: String,
   notes : [ // Käyttäjän lisäämän muistiinpanoihin viitataan sen mallissa
     {
-      type: String, //placeholder muistiinpanoskeemalle
-      required: true,
-      default: 'Test Note'
+      note: {
+        type: String, //placeholder muistiinpanoskeemalle
+        required: true,
+        default: 'Test Note'
+      }
     }
   ],
 })

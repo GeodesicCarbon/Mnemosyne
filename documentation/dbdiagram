@@ -1,8 +1,9 @@
 Table Note {
   _id objectID PK
+  name string
   dateCreated datetime
   dateDue datetime
-  noteItem NoteItem
+  noteItems NoteItem
   noteCategory Category
   noteTags Tag
   repeatability enum

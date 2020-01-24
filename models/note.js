@@ -13,15 +13,19 @@ const repeatability = {
 
 // Luodaan mongoose-skeema muistiinpanoille ja palautetaan siitä malli
 const noteSchema = mongoose.Schema({
+  name: {
+    type: String,
+    default: ''
+  },
   dateCreated: {
     type: Date,
-    required: true
+    required: true,
+    default: Date.now()
   },
   dateDue: {
     type: Date,
-    required: true
   },
-  noteItem: [{
+  noteItems: [{
     itemName: {
       type: String,
       required: true
@@ -63,4 +67,7 @@ noteSchema.set('toJSON', {
   }
 })
 
-module.exports = mongoose.model('Note', noteSchema)
+module.exports = {
+  default: mongoose.model('Note', noteSchema),
+  repeatability
+}
