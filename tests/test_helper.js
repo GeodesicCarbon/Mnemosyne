@@ -15,6 +15,13 @@ const initialNotes = [
     noteTags: ['Blue', 'Epoch'],
     repeatability: repeatability.ONCE,
     user: 'IBM'
+  },
+  {
+    name: 'oneDone',
+    noteItem: [{ itemName: 'Not done', isDone: false }, { itemName: 'Done', isDone: true }]
+  },
+  {
+
   }
 ]
 
@@ -24,9 +31,9 @@ const initialUsers = [
     email: 'test.user@altavista.com',
     name: 'Foo Bar',
     passwordHash: 'qwertyuiop',
-    notes : {
+    notes : [{
       note: 'Y2k'
-    }
+    }]
   }
 ]
 
