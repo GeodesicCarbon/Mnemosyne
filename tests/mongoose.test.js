@@ -33,7 +33,7 @@ describe('when adding notes to the database', () => {
   describe('notes are added correctly', () => {
     test('correct number of notes are present', async () => {
       const notes = await helper.notesInDB()
-      expect(notes.length).toBe(3)
+      expect(notes.length).toBe(helper.initialNotes.length)
     })
     test('fully defined note is added correctly', async () => {
       const notes = await helper.notesInDB()
@@ -104,7 +104,7 @@ describe('when adding users to the database', () => {
   describe('users are added correctly', () => {
     test('correct number of users are present', async () => {
       const users = await helper.usersInDB()
-      expect(users.length).toBe(3)
+      expect(users.length).toBe(helper.initialUsers.length)
     })
     test('fully defined user is added correctly', async () => {
       const users = await helper.usersInDB()
@@ -157,7 +157,7 @@ describe('when adding categories to the database', () => {
   describe('categories are added correctly', () => {
     test('correct number of categories are present', async () => {
       const categories = await helper.categoriesInDB()
-      expect(categories.length).toBe(2)
+      expect(categories.length).toBe(helper.initialCategories.length)
     })
     test('fully defined category is added correctly', async () => {
       const categories = await helper.categoriesInDB()
@@ -190,7 +190,7 @@ describe('when adding tags to the database', () => {
   describe('users are added correctly', () => {
     test('correct number of tags are present', async () => {
       const tags = await helper.tagsInDB()
-      expect(tags.length).toBe(2)
+      expect(tags.length).toBe(helper.initialTags.length)
     })
     test('fully defined user is added correctly', async () => {
       const tags = await helper.tagsInDB()
