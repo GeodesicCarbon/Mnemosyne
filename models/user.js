@@ -19,8 +19,7 @@ const userSchema = mongoose.Schema({
     {
       note: {
         type: String, //placeholder muistiinpanoskeemalle
-        required: true,
-        default: 'Test Note'
+        required: true
       }
     }
   ],

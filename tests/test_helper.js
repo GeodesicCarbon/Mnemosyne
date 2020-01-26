@@ -34,18 +34,39 @@ const initialUsers = [
     notes : [{
       note: 'Y2k'
     }]
+  },
+  {
+    username: 'moreNotes',
+    email: 'foobar',
+    notes : [{
+      note: 'note1'
+    },{
+      note: 'note2'
+    },{
+      note: 'note12345'
+    }]
+  },
+  {
+    username: 'default',
+    email: 'default',
   }
 ]
 
 const initialCategories = [
   {
     name: 'Test Category'
+  },
+  {
+    name: 'Test Category 2'
   }
 ]
 
 const initialTags = [
   {
     tag: 'FooTag'
+  },
+  {
+    tag: 'BarTag'
   }
 ]
 
