@@ -24,3 +24,4 @@ jobs:
         npm test
       env:
         CI: true
+        CI_MONGODB_URI: ${{ secrets.CI_MONGODB_URI }}
