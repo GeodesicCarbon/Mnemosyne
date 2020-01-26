@@ -47,7 +47,7 @@ const noteSchema = mongoose.Schema({
   }],
   repeatability: {
     type: String,
-    enum: repeatability.values(),
+    enum: Object.values(repeatability),
     required: true,
     default: repeatability.NEVER
   },

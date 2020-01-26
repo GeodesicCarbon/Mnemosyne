@@ -1,5 +1,6 @@
 // tuodaan tarvittavat skeemat
-const { Note, repeatability } = require('../models/note')
+const Note = require('../models/note').default
+const repeatability = require('../models/note').repeatability
 const User = require('../models/user')
 const Category = require('../models/category')
 const Tag = require('../models/tag')
@@ -10,7 +11,7 @@ const initialNotes = [
     name: 'Y2k',
     dateCreated: Date.parse('1999-01-01'),
     dateDue: Date.parse('2000-01-01'),
-    noteItem: [{ itemName: 'Fix Y2K', isDone: false }, { itemName: 'party', isDone: false }],
+    noteItems: [{ itemName: 'Fix Y2K', isDone: false }, { itemName: 'party', isDone: false }],
     noteCategory: 'Low-priority',
     noteTags: ['Blue', 'Epoch'],
     repeatability: repeatability.ONCE,
@@ -18,7 +19,7 @@ const initialNotes = [
   },
   {
     name: 'oneDone',
-    noteItem: [{ itemName: 'Not done', isDone: false }, { itemName: 'Done', isDone: true }]
+    noteItems: [{ itemName: 'Not done', isDone: false }, { itemName: 'Done', isDone: true }]
   },
   {
 
