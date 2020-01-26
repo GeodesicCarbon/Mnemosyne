@@ -12,7 +12,7 @@ if (process.env.NODE_ENV === 'test') {
 
 // Määritellään tietokanta CI:lle
 console.log(process.env.CI)
-if (process.env.CI == true) {
+if (process.env.CI === 'true') {
   MONGODB_URI = process.env.CI_MONGODB_URI
 }
 console.log(typeof MONGODB_URI)
