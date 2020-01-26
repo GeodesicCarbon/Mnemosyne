@@ -9,10 +9,13 @@ let MONGODB_URI = process.env.MONGODB_URI
 if (process.env.NODE_ENV === 'test') {
   MONGODB_URI = process.env.TEST_MONGODB_URI
 }
-console.log(typeof process.env.CI_MONGODB_URI)
-if (process.env.CI === true) {
+
+// Määritellään tietokanta CI:lle
+console.log(process.env.CI)
+if (process.env.CI == true) {
   MONGODB_URI = process.env.CI_MONGODB_URI
 }
+console.log(typeof MONGODB_URI)
 
 module.exports = {
   MONGODB_URI,
