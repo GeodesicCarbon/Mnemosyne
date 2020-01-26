@@ -8,6 +8,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 
 // Ladataan kontrollerit
+const notesRouter = require('./controllers/notes')
 
 // Yhdistetään MongoDB-tietokantaan
 mongoose.connect(config.MONGODB_URI, {
@@ -24,5 +25,6 @@ app.use(bodyParser.json())
 // Määritellään tokenin haku -middleware
 
 // Yhdistetään kontrolleri moduuliin
+app.use('/api/notes', notesRouter)
 
 module.exports = app
