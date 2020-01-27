@@ -12,7 +12,7 @@ if (process.env.NODE_ENV === 'test') {
 
 // Määritellään tietokanta CI:lle
 if (process.env.CI === 'true') {
-  MONGODB_URI = process.env.CI_MONGODB_URI.slice(0,88) +  process.version + process.env.CI_MONGODB_URI.slice(88)
+  MONGODB_URI = process.env.CI_MONGODB_URI.slice(0,87) + '-' + process.version + process.env.CI_MONGODB_URI.slice(87)
 }
 
 module.exports = {
