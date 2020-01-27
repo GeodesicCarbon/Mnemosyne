@@ -36,6 +36,20 @@ describe('when there are notes already present', () => {
 
     expect(response.body.length).toBe(helper.initialNotes.length)
   })
+  test('a specific note is present', async () => {
+    const initialNote = Object.assign({}, helper.initialNotes[0])
+    const response = await api.get('/api/notes')
+    const testNote = response.body[0]
+    testNote.dateCreated = Date.parse(testNote.dateCreated)
+    testNote.dateDue = Date.parse(testNote.dateDue)
+    expect(typeof testNote.id).toBe('string')
+    expect(typeof testNote.noteItems[0].id).toBe('string')
+    expect(typeof testNote.noteItems[1].id).toBe('string')
+    delete testNote.id
+    delete testNote.noteItems[0].id
+    delete testNote.noteItems[1].id
+    expect(testNote).toEqual(initialNote)
+  })
 })
 afterAll(() => {
   mongoose.connection.close()

@@ -1,6 +1,7 @@
 // ladataan tarvittavat moduulit
 const mongoose = require('mongoose')
 const config = require('../utils/config')
+console.log(config.MONGODB_URI.substring(0,24))
 mongoose.connect(config.MONGODB_URI, {
   useNewUrlParser: true ,
   useFindAndModify: false,
@@ -41,16 +42,16 @@ describe('when adding notes to the database', () => {
       notes[0].dateDue = Date.parse(notes[0].dateDue)
       expect(typeof notes[0].id).toBe('string')
       delete notes[0].id
-      delete notes[0].noteItems[0]._id
-      delete notes[0].noteItems[1]._id
+      delete notes[0].noteItems[0].id
+      delete notes[0].noteItems[1].id
       expect(notes[0]).toBeDefined()
       expect(notes[0]).toEqual(helper.initialNotes[0])
     })
     test('noteItems are added correctly', async () => {
       const notes = await helper.notesInDB()
       const note = notes[1]
-      delete notes[1].noteItems[0]._id
-      delete notes[1].noteItems[1]._id
+      delete notes[1].noteItems[0].id
+      delete notes[1].noteItems[1].id
       expect(note.noteItems).toEqual(helper.initialNotes[1].noteItems)
     })
     test('Partially defined note to have default values', async () => {

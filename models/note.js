@@ -64,6 +64,10 @@ noteSchema.set('toJSON', {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
     delete returnedObject.__v
+    for (const item of returnedObject.noteItems) {
+      item.id = item._id.toString()
+      delete item._id
+    }
   }
 })
 
