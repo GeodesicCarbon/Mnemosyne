@@ -1,7 +1,6 @@
 // ladataan tarvittavat moduulit
 const mongoose = require('mongoose')
 const config = require('../utils/config')
-console.log(config.MONGODB_URI.substring(0,24))
 mongoose.connect(config.MONGODB_URI, {
   useNewUrlParser: true ,
   useFindAndModify: false,
