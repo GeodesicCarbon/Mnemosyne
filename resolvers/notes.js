@@ -10,8 +10,8 @@ const repeatability = require('../models/note').repeatability
 
 const notesResolver = {
   Query: {
-    allNotes: () => {
-      return Note.find({})
+    allNotes: async () => {
+      return await Note.find({})
     }
   },
   // Tehdään Date-skalaarin toteutus

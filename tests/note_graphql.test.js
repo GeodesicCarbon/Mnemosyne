@@ -28,11 +28,16 @@ describe('when there are notes already present', () => {
   })
   test('notes are returned as JSON objects', async () => {
     await api
-      .get('/api/notes')
+      .post('/graphql')
+      .send({ query: '{ allNotes { name } }' })
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
   test('correct number of blogs are returned', async () => {
+    const res = await api
+      .post('/graphql')
+      .send({ query: '{ allNotes { name } }' })
+    expect(res.body.data.allNotes.length).toBe(3)
   })
   test('a specific note is present', async () => {
   })
