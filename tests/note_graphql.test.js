@@ -1,6 +1,7 @@
 // ladataan tarvittavat moduulit
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const { gql } = require('apollo-server-express')
 
 // ladataan apumoduuli testejä varten
 const helper = require('./test_helper')
@@ -25,7 +26,11 @@ describe('when there are notes already present', () => {
       await noteObject.save()
     }
   })
-  test('notes are returned as GrapthQL objects', async () => {
+  test('notes are returned as JSON objects', async () => {
+    await api
+      .get('/api/notes')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
   })
   test('correct number of blogs are returned', async () => {
   })
