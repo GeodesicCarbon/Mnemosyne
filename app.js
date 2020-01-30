@@ -23,7 +23,8 @@ const notesResolver = require('./resolvers/notes')
 mongoose.connect(config.MONGODB_URI, {
   useNewUrlParser: true ,
   useFindAndModify: false,
-  useCreateIndex: true
+  useCreateIndex: true,
+  useUnifiedTopology: true
 })
 
 // Luodaan yhtenäinen GraphQL-skeema
