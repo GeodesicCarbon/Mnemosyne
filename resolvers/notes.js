@@ -1,5 +1,6 @@
 // ladataan tarvittavat moduulit
 const { GraphQLScalarType } =  require('graphql')
+const { UserInputError } = require('apollo-server')
 const { Kind } = require('graphql/language')
 
 // Ladataan tarvittavat MongoDB -skeemat
@@ -12,6 +13,21 @@ const notesResolver = {
   Query: {
     allNotes: async () => {
       return await Note.find({})
+    }
+  },
+  Mutation: {
+    addNote: async (root, args) => {
+      const data = { ...args }
+      data.noteItems = data.noteItems.map((item) => ({ itemName: item, isDone: false }))
+      const note = new Note({ ...data })
+      try {
+        await note.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args
+        })
+      }
+      return note
     }
   },
   // Tehdään Date-skalaarin toteutus
