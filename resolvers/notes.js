@@ -29,6 +29,18 @@ const notesResolver = {
         })
       }
       return note
+    },
+    addItemToNote: async (root, args) => {
+      const note = await Note.findById(args.id)
+      note.noteItems = note.noteItems.concat({ itemName: args.newItem, isDone: false })
+      try {
+        await note.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args
+        })
+      }
+      return note
     }
   },
   // Tehdään Date-skalaarin toteutus

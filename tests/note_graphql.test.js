@@ -184,9 +184,43 @@ describe('when there are notes already present', () => {
     expect(res.body.errors[0].message).toBe('Expected type String!, found null.')
     expect(res.body.errors[1].message).toBe('Expected type String!, found null.')
   })
-  // test('Adding a new item to the note works correctly', async () => {
-  //
-  // })
+  test('Adding a new item to the note works correctly', async () => {
+    const notesBefore = await helper.notesInDB()
+    const note = notesBefore[0]
+    const newItem = 'Fix  Epoch'
+    const gqlRequest = `mutation
+      {  addItemToNote(
+            id: "${note.id}"
+            newItem: "${newItem}",
+        ) {
+          id
+          name,
+          dateCreated,
+          dateDue,
+          noteItems{
+            id
+            itemName,
+            isDone
+          },
+          noteCategory
+          noteTags,
+          repeatability,
+          user
+        }}`
+    const res = await api
+      .post('/graphql')
+      .send({ query: gqlRequest })
+
+    const noteReturned = res.body.data.addItemToNote
+    noteReturned.dateDue = new Date(noteReturned.dateDue)
+    noteReturned.dateCreated = new Date(noteReturned.dateCreated)
+    expect(noteReturned.noteItems).toContainEqual(note.noteItems[0])
+    expect(noteReturned.noteItems).toContainEqual(note.noteItems[1])
+    expect(noteReturned.noteItems).toContainEqual(expect.objectContaining({ itemName: newItem, isDone: false }))
+
+    const notesInDB = await helper.notesInDB()
+    expect(notesInDB).toContainEqual(noteReturned)
+  })
   // test('Deleting an item from the note works correctly', async () => {
   //
   // })

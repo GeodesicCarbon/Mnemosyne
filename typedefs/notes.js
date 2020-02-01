@@ -35,6 +35,11 @@ const notesTypedef = gql`
       user: String,
       repeatability: String
     ): Note
+    
+    addItemToNote(
+      id: String!
+      newItem: String!
+    ): Note
   }
 `
 module.exports = notesTypedef
