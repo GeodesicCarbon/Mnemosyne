@@ -221,6 +221,74 @@ describe('when there are notes already present', () => {
     const notesInDB = await helper.notesInDB()
     expect(notesInDB).toContainEqual(noteReturned)
   })
+  test('Adding a item to the non-existent note throws error', async () => {
+    const notesBefore = await helper.notesInDB()
+    const wrongId = await helper.nonExistingNoteId()
+    const newItem = 'Fix  Epoch'
+    const gqlRequest = `mutation
+      {  addItemToNote(
+            id: "${wrongId}"
+            newItem: "${newItem}",
+        ) {
+          id
+          name,
+          dateCreated,
+          dateDue,
+          noteItems{
+            id
+            itemName,
+            isDone
+          },
+          noteCategory
+          noteTags,
+          repeatability,
+          user
+        }}`
+    const res = await api
+      .post('/graphql')
+      .send({ query: gqlRequest })
+
+    expect(res.body.data.addItemToNote).toBeNull()
+    expect(res.body.errors).toBeDefined()
+    expect(res.body.errors[0].message).toBe('Invalid note id.')
+
+    const notesInDB = await helper.notesInDB()
+    expect(notesInDB.length).toEqual(notesBefore.length)
+  })
+  test('Adding a malformed item to the note throws error', async () => {
+    const notesBefore = await helper.notesInDB()
+    const note = notesBefore[0]
+    const newItem = 99999
+    const gqlRequest = `mutation
+      {  addItemToNote(
+            id: "${note.id}"
+            newItem: ${newItem},
+        ) {
+          id
+          name,
+          dateCreated,
+          dateDue,
+          noteItems{
+            id
+            itemName,
+            isDone
+          },
+          noteCategory
+          noteTags,
+          repeatability,
+          user
+        }}`
+    const res = await api
+      .post('/graphql')
+      .send({ query: gqlRequest })
+
+    expect(res.body.data).toBeUndefined()
+    expect(res.body.errors).toBeDefined()
+    expect(res.body.errors[0].message).toBe(`Expected type String!, found ${newItem}.`)
+
+    const notesInDB = await helper.notesInDB()
+    expect(notesInDB).toEqual(notesBefore)
+  })
   // test('Deleting an item from the note works correctly', async () => {
   //
   // })

@@ -77,6 +77,14 @@ const notesInDB = async () => {
   return notes.map(note => note.toJSON())
 }
 
+const nonExistingNoteId = async () => {
+  const note = new Note({ name: 'placeholder' })
+  await note.save()
+  await note.remove()
+
+  return note._id.toString()
+}
+
 const usersInDB = async () => {
   const users = await User.find({})
   return users.map(user => user.toJSON())
@@ -98,6 +106,7 @@ module.exports = {
   initialCategories,
   initialTags,
   notesInDB,
+  nonExistingNoteId,
   usersInDB,
   categoriesInDB,
   tagsInDB

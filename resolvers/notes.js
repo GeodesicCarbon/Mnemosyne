@@ -31,9 +31,15 @@ const notesResolver = {
       return note
     },
     addItemToNote: async (root, args) => {
-      const note = await Note.findById(args.id)
-      note.noteItems = note.noteItems.concat({ itemName: args.newItem, isDone: false })
+      let note
       try {
+        note = await Note.findById(args.id)
+        if (!note) {
+          throw new UserInputError('Invalid note id.',{
+            invalidArgs: args
+          })
+        }
+        note.noteItems = note.noteItems.concat({ itemName: args.newItem, isDone: false })
         await note.save()
       } catch (error) {
         throw new UserInputError(error.message, {
