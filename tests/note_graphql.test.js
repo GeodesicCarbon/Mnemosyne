@@ -140,9 +140,50 @@ describe('when there are notes already present', () => {
     expect(notesInDB).toContainEqual(noteReturned)
 
   })
-  // test('adding a malformed not fails', async () => {
-  //
-  // })
+  test('adding a malformed note fails', async () => {
+    const malformNote = {
+      name: null,
+      dateDue: null,
+      noteItems: [null],
+      noteCategory: null,
+      noteTags: [null],
+      repeatability: 'INCORRECT ENUM',
+      user: null
+    }
+
+    const gqlRequest = `mutation
+      {  addNote(
+            name: "${malformNote.name}",
+            dateDue: ${malformNote.dateDue},
+            noteItems: ${JSON.stringify(malformNote.noteItems)},
+            noteCategory: "${malformNote.noteCategory}",
+            noteTags: ${JSON.stringify(malformNote.noteTags)},
+            user: "${malformNote.user}",
+            repeatability: "${malformNote.repeatability}",
+        ) {
+          id
+          name,
+          dateCreated,
+          dateDue,
+          noteItems{
+            id
+            itemName,
+            isDone
+          },
+          noteCategory
+          noteTags,
+          repeatability,
+          user
+        }}`
+    const res = await api
+      .post('/graphql')
+      .send({ query: gqlRequest })
+
+    expect(res.body.data).toBeUndefined()
+    expect(res.body.errors).toBeDefined()
+    expect(res.body.errors[0].message).toBe('Expected type String!, found null.')
+    expect(res.body.errors[1].message).toBe('Expected type String!, found null.')
+  })
   // test('Adding a new item to the note works correctly', async () => {
   //
   // })
