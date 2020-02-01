@@ -18,7 +18,8 @@ const notesResolver = {
   Mutation: {
     addNote: async (root, args) => {
       const data = { ...args }
-      data.noteItems = data.noteItems.map((item) => ({ itemName: item, isDone: false }))
+      if (data.noteItems)
+        data.noteItems = data.noteItems.map((item) => ({ itemName: item, isDone: false }))
       const note = new Note({ ...data })
       try {
         await note.save()

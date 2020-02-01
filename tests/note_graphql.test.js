@@ -99,9 +99,47 @@ describe('when there are notes already present', () => {
     const notesInDB = await helper.notesInDB()
     expect(notesInDB).toContainEqual(noteReturned)
   })
-  // test('adding a partially defined note works correctly', async () => {
-  //
-  // })
+  test('adding a partially defined note works correctly', async () => {
+    const defaultNote = {
+      name: '',
+      noteCategory: 'Misc',
+      repeatability: repeatability.NEVER,
+      user: 'Test User'
+    }
+
+    const gqlRequest = `mutation
+      {  addNote {
+          id
+          name,
+          dateCreated,
+          dateDue,
+          noteItems{
+            id
+            itemName,
+            isDone
+          },
+          noteCategory
+          noteTags,
+          repeatability,
+          user
+        }}`
+
+    const res = await api
+      .post('/graphql')
+      .send({ query: gqlRequest })
+
+    const noteReturned = res.body.data.addNote
+    noteReturned.dateCreated = new Date(noteReturned.dateCreated)
+    expect(noteReturned).toEqual(expect.objectContaining(defaultNote))
+
+    expect(noteReturned.dateDue).toBe(null)
+    delete noteReturned.dateDue
+
+    const notesInDB = await helper.notesInDB()
+    expect(notesInDB.length).toBe(helper.initialNotes.length + 1)
+    expect(notesInDB).toContainEqual(noteReturned)
+
+  })
   // test('adding a malformed not fails', async () => {
   //
   // })
