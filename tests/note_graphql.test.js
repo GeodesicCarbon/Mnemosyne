@@ -25,6 +25,7 @@ describe('when there are notes already present', () => {
       await noteObject.save()
     }
   })
+
   test('notes are returned as JSON objects', async () => {
     await api
       .post('/graphql')
@@ -32,12 +33,14 @@ describe('when there are notes already present', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
+
   test('correct number of blogs are returned', async () => {
     const res = await api
       .post('/graphql')
       .send({ query: '{ allNotes { name } }' })
     expect(res.body.data.allNotes.length).toBe(3)
   })
+
   test('a specific note is present', async () => {
     const res = await api
       .post('/graphql')
@@ -45,6 +48,7 @@ describe('when there are notes already present', () => {
     const testNote = helper.initialNotes[0]
     expect(res.body.data.allNotes).toContainEqual({ name: testNote.name, noteItems: testNote.noteItems })
   })
+
   test('adding a fully defined note works correctly', async () => {
     const newNote = {
       name: 'GQL note',
@@ -99,6 +103,7 @@ describe('when there are notes already present', () => {
     const notesInDB = await helper.notesInDB()
     expect(notesInDB).toContainEqual(noteReturned)
   })
+
   test('adding a partially defined note works correctly', async () => {
     const defaultNote = {
       name: '',
@@ -138,8 +143,8 @@ describe('when there are notes already present', () => {
     const notesInDB = await helper.notesInDB()
     expect(notesInDB.length).toBe(helper.initialNotes.length + 1)
     expect(notesInDB).toContainEqual(noteReturned)
-
   })
+
   test('adding a malformed note fails', async () => {
     const malformNote = {
       name: null,
@@ -184,6 +189,7 @@ describe('when there are notes already present', () => {
     expect(res.body.errors[0].message).toBe('Expected type String!, found null.')
     expect(res.body.errors[1].message).toBe('Expected type String!, found null.')
   })
+
   test('Adding a new item to the note works correctly', async () => {
     const notesBefore = await helper.notesInDB()
     const note = notesBefore[0]
@@ -221,6 +227,7 @@ describe('when there are notes already present', () => {
     const notesInDB = await helper.notesInDB()
     expect(notesInDB).toContainEqual(noteReturned)
   })
+
   test('Adding a item to the non-existent note throws error', async () => {
     const notesBefore = await helper.notesInDB()
     const wrongId = await helper.nonExistingNoteId()
@@ -255,6 +262,7 @@ describe('when there are notes already present', () => {
     const notesInDB = await helper.notesInDB()
     expect(notesInDB.length).toEqual(notesBefore.length)
   })
+
   test('Adding a malformed item to the note throws error', async () => {
     const notesBefore = await helper.notesInDB()
     const note = notesBefore[0]
@@ -289,6 +297,7 @@ describe('when there are notes already present', () => {
     const notesInDB = await helper.notesInDB()
     expect(notesInDB).toEqual(notesBefore)
   })
+
   test('Deleting an item from the note works correctly', async () => {
     const notesBefore = await helper.notesInDB()
     const note = notesBefore[0]
@@ -325,6 +334,7 @@ describe('when there are notes already present', () => {
     const notesInDB = await helper.notesInDB()
     expect(notesInDB).toContainEqual(noteReturned)
   })
+
   test('Deleting an item from non-existent note throws error', async () => {
     const notesBefore = await helper.notesInDB()
     const wrongId = await helper.nonExistingNoteId()
@@ -358,6 +368,7 @@ describe('when there are notes already present', () => {
     const notesInDB = await helper.notesInDB()
     expect(notesInDB.length).toEqual(notesBefore.length)
   })
+
   test('Completing a note item works correctly', async () => {
     const notesBefore = await helper.notesInDB()
     const note = notesBefore[0]
@@ -394,12 +405,13 @@ describe('when there are notes already present', () => {
     const notesInDB = await helper.notesInDB()
     expect(notesInDB).toContainEqual(noteReturned)
   })
+
   test('Completing an item from non-existent note throws error', async () => {
     const notesBefore = await helper.notesInDB()
     const wrongId = await helper.nonExistingNoteId()
     const randomID = '5e33bef3c940eb108baa3bd4'
     const gqlRequest = `mutation
-      {  removeItemFromNote(
+      {  completeItem(
             id: "${wrongId}"
             itemId: "${randomID}",
         ) {
@@ -420,13 +432,14 @@ describe('when there are notes already present', () => {
     const res = await api
       .post('/graphql')
       .send({ query: gqlRequest })
-    expect(res.body.data.removeItemFromNote).toBeNull()
+    expect(res.body.data.completeItem).toBeNull()
     expect(res.body.errors).toBeDefined()
     expect(res.body.errors[0].message).toBe('Invalid note id.')
 
     const notesInDB = await helper.notesInDB()
     expect(notesInDB.length).toEqual(notesBefore.length)
   })
+
   test('Completing an non-exitent item from a note throws error', async () => {
     const notesBefore = await helper.notesInDB()
     const note = notesBefore[0]
@@ -461,9 +474,110 @@ describe('when there are notes already present', () => {
     const notesInDB = await helper.notesInDB()
     expect(notesInDB).toEqual(notesBefore)
   })
-  // test('Uncompleting a note item works correctly', async () => {
-  //
-  // })
+
+  test('Uncompleting a note item works correctly', async () => {
+    const notesBefore = await helper.notesInDB()
+    const note = notesBefore[1]
+    expect(note.noteItems[1].isDone).toBe(true)
+    const gqlRequest = `mutation
+      {  uncompleteItem(
+            id: "${note.id}"
+            itemId: "${note.noteItems[1].id}",
+        ) {
+          id
+          name,
+          dateCreated,
+          noteItems{
+            id
+            itemName,
+            isDone
+          },
+          noteCategory
+          noteTags,
+          repeatability,
+          user
+        }}`
+    const res = await api
+      .post('/graphql')
+      .send({ query: gqlRequest })
+
+    note.noteItems[1].isDone = false
+    const noteReturned = res.body.data.uncompleteItem
+    noteReturned.dateCreated = new Date(noteReturned.dateCreated)
+    expect(noteReturned).toEqual(note)
+
+    const notesInDB = await helper.notesInDB()
+    expect(notesInDB).toContainEqual(noteReturned)
+  })
+
+  test('Uncompleting an item from non-existent note throws error', async () => {
+    const notesBefore = await helper.notesInDB()
+    const wrongId = await helper.nonExistingNoteId()
+    const randomID = '5e33bef3c940eb108baa3bd4'
+    const gqlRequest = `mutation
+      {  uncompleteItem(
+            id: "${wrongId}"
+            itemId: "${randomID}",
+        ) {
+          id
+          name,
+          dateCreated,
+          dateDue,
+          noteItems{
+            id
+            itemName,
+            isDone
+          },
+          noteCategory
+          noteTags,
+          repeatability,
+          user
+        }}`
+    const res = await api
+      .post('/graphql')
+      .send({ query: gqlRequest })
+    expect(res.body.data.uncompleteItem).toBeNull()
+    expect(res.body.errors).toBeDefined()
+    expect(res.body.errors[0].message).toBe('Invalid note id.')
+
+    const notesInDB = await helper.notesInDB()
+    expect(notesInDB.length).toEqual(notesBefore.length)
+  })
+
+  test('Uncompleting an non-exitent item from a note throws error', async () => {
+    const notesBefore = await helper.notesInDB()
+    const note = notesBefore[1]
+
+    const gqlRequest = `mutation
+      {  uncompleteItem(
+            id: "${note.id}"
+            itemId: "${note.id}",
+        ) {
+          id
+          name,
+          dateCreated,
+          dateDue,
+          noteItems{
+            id
+            itemName,
+            isDone
+          },
+          noteCategory
+          noteTags,
+          repeatability,
+          user
+        }}`
+
+    const res = await api
+      .post('/graphql')
+      .send({ query: gqlRequest })
+    expect(res.body.data.uncompleteItem).toBeNull()
+    expect(res.body.errors).toBeDefined()
+    expect(res.body.errors[0].message).toBe('Invalid noteItem id.')
+
+    const notesInDB = await helper.notesInDB()
+    expect(notesInDB).toEqual(notesBefore)
+  })
   // test('Updating note fields works correctly', async () => {
   //
   // })
@@ -471,6 +585,7 @@ describe('when there are notes already present', () => {
   //
   // })
 })
+
 afterAll(() => {
   mongoose.connection.close()
 })
