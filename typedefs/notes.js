@@ -35,10 +35,15 @@ const notesTypedef = gql`
       user: String,
       repeatability: String
     ): Note
-    
+
     addItemToNote(
       id: String!
       newItem: String!
+    ): Note
+
+    removeItemFromNote(
+      id: String!
+      itemId: String!
     ): Note
   }
 `

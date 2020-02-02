@@ -47,6 +47,24 @@ const notesResolver = {
         })
       }
       return note
+    },
+    removeItemFromNote: async (root, args) => {
+      let note
+      try {
+        note = await Note.findById(args.id)
+        if (!note) {
+          throw new UserInputError('Invalid note id.',{
+            invalidArgs: args
+          })
+        }
+        note.noteItems = note.noteItems.filter((note) => note._id.toString() !== args.itemId)
+        await note.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args
+        })
+      }
+      return note
     }
   },
   // Tehdään Date-skalaarin toteutus
