@@ -55,6 +55,10 @@ const notesTypedef = gql`
       id: String!
       itemId: String!
     ): Note
+
+    deleteNote(
+      id: String!
+    ): Boolean
   }
 `
 module.exports = notesTypedef

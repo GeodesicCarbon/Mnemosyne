@@ -581,9 +581,24 @@ describe('when there are notes already present', () => {
   // test('Updating note fields works correctly', async () => {
   //
   // })
-  // test('Deleting a note works correctly', async () => {
-  //
-  // })
+  test('Deleting a note works correctly', async () => {
+    const notesBefore = await helper.notesInDB()
+    const note = notesBefore[0]
+
+    const gqlRequest = `mutation
+      {  deleteNote(
+            id: "${note.id}"
+        )
+      }`
+
+    const res = await api
+      .post('/graphql')
+      .send({ query: gqlRequest })
+    expect(res.body.data.deleteNote).toBe(true)
+    const notesInDB = await helper.notesInDB()
+    expect(notesInDB.length).toEqual(notesBefore.length - 1)
+    expect(notesInDB).not.toContainEqual(note)
+  })
 })
 
 afterAll(() => {

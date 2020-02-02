@@ -119,7 +119,17 @@ const notesResolver = {
         })
       }
       return note
-    }
+    },
+    deleteNote: async (root, args) => {
+      try {
+        await Note.findByIdAndDelete(args.id)
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args
+        })
+      }
+      return true
+    },
   },
   // Tehdään Date-skalaarin toteutus
   // Käytetty esimerkkikoodia: https://www.apollographql.com/docs/graphql-tools/scalars/#custom-scalar-examples
