@@ -358,9 +358,109 @@ describe('when there are notes already present', () => {
     const notesInDB = await helper.notesInDB()
     expect(notesInDB.length).toEqual(notesBefore.length)
   })
-  // test('Completing a note item works correctly', async () => {
-  //
-  // })
+  test('Completing a note item works correctly', async () => {
+    const notesBefore = await helper.notesInDB()
+    const note = notesBefore[0]
+
+    const gqlRequest = `mutation
+      {  completeItem(
+            id: "${note.id}"
+            itemId: "${note.noteItems[0].id}",
+        ) {
+          id
+          name,
+          dateCreated,
+          dateDue,
+          noteItems{
+            id
+            itemName,
+            isDone
+          },
+          noteCategory
+          noteTags,
+          repeatability,
+          user
+        }}`
+    const res = await api
+      .post('/graphql')
+      .send({ query: gqlRequest })
+
+    note.noteItems[0].isDone = true
+    const noteReturned = res.body.data.completeItem
+    noteReturned.dateDue = new Date(noteReturned.dateDue)
+    noteReturned.dateCreated = new Date(noteReturned.dateCreated)
+    expect(noteReturned).toEqual(note)
+
+    const notesInDB = await helper.notesInDB()
+    expect(notesInDB).toContainEqual(noteReturned)
+  })
+  test('Completing an item from non-existent note throws error', async () => {
+    const notesBefore = await helper.notesInDB()
+    const wrongId = await helper.nonExistingNoteId()
+    const randomID = '5e33bef3c940eb108baa3bd4'
+    const gqlRequest = `mutation
+      {  removeItemFromNote(
+            id: "${wrongId}"
+            itemId: "${randomID}",
+        ) {
+          id
+          name,
+          dateCreated,
+          dateDue,
+          noteItems{
+            id
+            itemName,
+            isDone
+          },
+          noteCategory
+          noteTags,
+          repeatability,
+          user
+        }}`
+    const res = await api
+      .post('/graphql')
+      .send({ query: gqlRequest })
+    expect(res.body.data.removeItemFromNote).toBeNull()
+    expect(res.body.errors).toBeDefined()
+    expect(res.body.errors[0].message).toBe('Invalid note id.')
+
+    const notesInDB = await helper.notesInDB()
+    expect(notesInDB.length).toEqual(notesBefore.length)
+  })
+  test('Completing an non-exitent item from a note throws error', async () => {
+    const notesBefore = await helper.notesInDB()
+    const note = notesBefore[0]
+
+    const gqlRequest = `mutation
+      {  completeItem(
+            id: "${note.id}"
+            itemId: "${note.id}",
+        ) {
+          id
+          name,
+          dateCreated,
+          dateDue,
+          noteItems{
+            id
+            itemName,
+            isDone
+          },
+          noteCategory
+          noteTags,
+          repeatability,
+          user
+        }}`
+
+    const res = await api
+      .post('/graphql')
+      .send({ query: gqlRequest })
+    expect(res.body.data.completeItem).toBeNull()
+    expect(res.body.errors).toBeDefined()
+    expect(res.body.errors[0].message).toBe('Invalid noteItem id.')
+
+    const notesInDB = await helper.notesInDB()
+    expect(notesInDB).toEqual(notesBefore)
+  })
   // test('Uncompleting a note item works correctly', async () => {
   //
   // })

@@ -57,7 +57,34 @@ const notesResolver = {
             invalidArgs: args
           })
         }
-        note.noteItems = note.noteItems.filter((note) => note._id.toString() !== args.itemId)
+        note.noteItems = note.noteItems.filter((item) => item._id.toString() !== args.itemId)
+        await note.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args
+        })
+      }
+      return note
+    },
+    completeItem: async (root, args) => {
+      let note
+      try {
+        note = await Note.findById(args.id)
+        if (!note) {
+          throw new UserInputError('Invalid note id.',{
+            invalidArgs: args
+          })
+        }
+        if (note.noteItems.filter((item) => item._id.toString() === args.itemId).length === 0) {
+          throw new UserInputError('Invalid noteItem id.',{
+            invalidArgs: args
+          })
+        }
+        note.noteItems = note.noteItems.map(
+          (noteItem) => noteItem._id.toString() !== args.itemId
+            ? noteItem
+            : { ...noteItem.toObject(), isDone: true }
+        )
         await note.save()
       } catch (error) {
         throw new UserInputError(error.message, {

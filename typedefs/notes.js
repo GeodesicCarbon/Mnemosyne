@@ -45,6 +45,11 @@ const notesTypedef = gql`
       id: String!
       itemId: String!
     ): Note
+
+    completeItem(
+      id: String!
+      itemId: String!
+    ): Note
   }
 `
 module.exports = notesTypedef
