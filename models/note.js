@@ -62,6 +62,8 @@ const noteSchema = mongoose.Schema({
 noteSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
+    returnedObject.dateDue = Date.parse(returnedObject.dateDue)
+    returnedObject.dateCreated = Date.parse(returnedObject.dateCreated)
     delete returnedObject._id
     delete returnedObject.__v
     for (const item of returnedObject.noteItems) {
