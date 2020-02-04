@@ -568,52 +568,51 @@ describe('when there are notes already present', () => {
     expect(notesInDB).toEqual(notesBefore)
   })
 
-  // test('Updating note fields works correctly', async () => {
-  //   const notesBefore = await helper.notesInDB()
-  //   const note = notesBefore[0]
-  //   note.name = 'ChangedName'
-  //   note.dateDue = Date.now()
-  //   note.category = 'ChangedCategory'
-  //   note.noteTags = ['New', 'Tags']
-  //   note.repeatability = repeatability.BIANNUAL
-  //   note.user = 'ChangedUser'
-  //
-  //   const gqlRequest = `mutation
-  //     {  updateNote(
-  //           id: "${note.id}",
-  //           name: "${note.name}",
-  //           dateDue: ${note.dateDue},
-  //           noteCategory: "${note.noteCategory}",
-  //           noteTags: ${JSON.stringify(note.noteTags)},
-  //           user: "${note.user}",
-  //           repeatability: "${note.repeatability}",
-  //       ) {
-  //         id
-  //         name,
-  //         dateCreated,
-  //         dateDue,
-  //         noteItems{
-  //           id
-  //           itemName,
-  //           isDone
-  //         },
-  //         noteCategory
-  //         noteTags,
-  //         repeatability,
-  //         user
-  //       }}`
-  //   const res = await api
-  //     .post('/graphql')
-  //     .send({ query: gqlRequest })
-  //
-  //   const noteReturned = res.body.data.updateNote
-  //   noteReturned.dateDue = new Date(noteReturned.dateDue)
-  //   noteReturned.dateCreated = new Date(noteReturned.dateCreated)
-  //   expect(noteReturned).toEqual(note)
-  //
-  //   const notes = helper.notesInDB
-  //   expect(notes).toContainEqual(noteReturned)
-  // })
+  test('Updating note fields works correctly', async () => {
+    const notesBefore = await helper.notesInDB()
+    const note = notesBefore[0]
+    note.name = 'ChangedName'
+    note.dateDue = Date.now()
+    note.noteCategory = 'ChangedCategory'
+    note.noteTags = ['New', 'Tags']
+    note.repeatability = repeatability.BIANNUAL
+    note.user = 'ChangedUser'
+
+    const gqlRequest = `mutation
+      {  updateNote(
+            id: "${note.id}",
+            name: "${note.name}",
+            dateDue: ${note.dateDue},
+            noteCategory: "${note.noteCategory}",
+            noteTags: ${JSON.stringify(note.noteTags)},
+            user: "${note.user}",
+            repeatability: "${note.repeatability}",
+        ) {
+          id
+          name,
+          dateCreated,
+          dateDue,
+          noteItems{
+            id
+            itemName,
+            isDone
+          },
+          noteCategory
+          noteTags,
+          repeatability,
+          user
+        }}`
+    const res = await api
+      .post('/graphql')
+      .send({ query: gqlRequest })
+
+    const noteReturned = res.body.data.updateNote
+    expect(noteReturned).toEqual(note)
+
+    const notes = await helper.notesInDB()
+    expect(notes).toContainEqual(noteReturned)
+  })
+
   test('Deleting a note works correctly', async () => {
     const notesBefore = await helper.notesInDB()
     const note = notesBefore[0]
