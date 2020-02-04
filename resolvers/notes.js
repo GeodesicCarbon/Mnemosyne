@@ -120,6 +120,19 @@ const notesResolver = {
       }
       return note
     },
+    updateNote: async (root, args) => {
+      let note
+      const { id, ...fields } = args
+      try {
+        await Note.findByIdAndUpdate(id, fields)
+        note = await Note.findById(id)
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args
+        })
+      }
+      return note
+    },
     deleteNote: async (root, args) => {
       try {
         await Note.findByIdAndDelete(args.id)

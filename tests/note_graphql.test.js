@@ -87,13 +87,10 @@ describe('when there are notes already present', () => {
       .post('/graphql')
       .send({ query: gqlRequest })
 
-
     const noteReturned = res.body.data.addNote
-    noteReturned.dateDue = new Date(noteReturned.dateDue)
-    noteReturned.dateCreated = new Date(noteReturned.dateCreated)
 
     expect(noteReturned.name).toEqual(newNote.name)
-    expect(noteReturned.dateDue).toEqual(new Date(newNote.dateDue))
+    expect(noteReturned.dateDue).toEqual(newNote.dateDue)
     expect(noteReturned.noteCategory).toEqual(newNote.noteCategory)
     expect(noteReturned.repeatability).toEqual(newNote.repeatability)
     expect(noteReturned.noteItems).toEqual(newNote.noteItems.map(
@@ -134,7 +131,6 @@ describe('when there are notes already present', () => {
       .send({ query: gqlRequest })
 
     const noteReturned = res.body.data.addNote
-    noteReturned.dateCreated = new Date(noteReturned.dateCreated)
     expect(noteReturned).toEqual(expect.objectContaining(defaultNote))
 
     expect(noteReturned.dateDue).toBe(null)
@@ -218,8 +214,6 @@ describe('when there are notes already present', () => {
       .send({ query: gqlRequest })
 
     const noteReturned = res.body.data.addItemToNote
-    noteReturned.dateDue = new Date(noteReturned.dateDue)
-    noteReturned.dateCreated = new Date(noteReturned.dateCreated)
     expect(noteReturned.noteItems).toContainEqual(note.noteItems[0])
     expect(noteReturned.noteItems).toContainEqual(note.noteItems[1])
     expect(noteReturned.noteItems).toContainEqual(expect.objectContaining({ itemName: newItem, isDone: false }))
@@ -327,8 +321,6 @@ describe('when there are notes already present', () => {
 
     note.noteItems.shift()
     const noteReturned = res.body.data.removeItemFromNote
-    noteReturned.dateDue = new Date(noteReturned.dateDue)
-    noteReturned.dateCreated = new Date(noteReturned.dateCreated)
     expect(noteReturned).toEqual(note)
 
     const notesInDB = await helper.notesInDB()
@@ -398,8 +390,6 @@ describe('when there are notes already present', () => {
 
     note.noteItems[0].isDone = true
     const noteReturned = res.body.data.completeItem
-    noteReturned.dateDue = new Date(noteReturned.dateDue)
-    noteReturned.dateCreated = new Date(noteReturned.dateCreated)
     expect(noteReturned).toEqual(note)
 
     const notesInDB = await helper.notesInDB()
@@ -503,7 +493,6 @@ describe('when there are notes already present', () => {
 
     note.noteItems[1].isDone = false
     const noteReturned = res.body.data.uncompleteItem
-    noteReturned.dateCreated = new Date(noteReturned.dateCreated)
     expect(noteReturned).toEqual(note)
 
     const notesInDB = await helper.notesInDB()
@@ -578,8 +567,52 @@ describe('when there are notes already present', () => {
     const notesInDB = await helper.notesInDB()
     expect(notesInDB).toEqual(notesBefore)
   })
+
   // test('Updating note fields works correctly', async () => {
+  //   const notesBefore = await helper.notesInDB()
+  //   const note = notesBefore[0]
+  //   note.name = 'ChangedName'
+  //   note.dateDue = Date.now()
+  //   note.category = 'ChangedCategory'
+  //   note.noteTags = ['New', 'Tags']
+  //   note.repeatability = repeatability.BIANNUAL
+  //   note.user = 'ChangedUser'
   //
+  //   const gqlRequest = `mutation
+  //     {  updateNote(
+  //           id: "${note.id}",
+  //           name: "${note.name}",
+  //           dateDue: ${note.dateDue},
+  //           noteCategory: "${note.noteCategory}",
+  //           noteTags: ${JSON.stringify(note.noteTags)},
+  //           user: "${note.user}",
+  //           repeatability: "${note.repeatability}",
+  //       ) {
+  //         id
+  //         name,
+  //         dateCreated,
+  //         dateDue,
+  //         noteItems{
+  //           id
+  //           itemName,
+  //           isDone
+  //         },
+  //         noteCategory
+  //         noteTags,
+  //         repeatability,
+  //         user
+  //       }}`
+  //   const res = await api
+  //     .post('/graphql')
+  //     .send({ query: gqlRequest })
+  //
+  //   const noteReturned = res.body.data.updateNote
+  //   noteReturned.dateDue = new Date(noteReturned.dateDue)
+  //   noteReturned.dateCreated = new Date(noteReturned.dateCreated)
+  //   expect(noteReturned).toEqual(note)
+  //
+  //   const notes = helper.notesInDB
+  //   expect(notes).toContainEqual(noteReturned)
   // })
   test('Deleting a note works correctly', async () => {
     const notesBefore = await helper.notesInDB()

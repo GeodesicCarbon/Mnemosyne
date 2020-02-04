@@ -31,7 +31,7 @@ const notesTypedef = gql`
       dateDue: Date
       noteItems: [String!]
       noteCategory: String
-      noteTags: [String!],
+      noteTags: [String!]
       user: String,
       repeatability: String
     ): Note
@@ -54,6 +54,16 @@ const notesTypedef = gql`
     uncompleteItem(
       id: String!
       itemId: String!
+    ): Note
+
+    updateNote(
+      id: String!
+      name: String
+      dateDue: Date
+      noteCategory: String
+      noteTags: [String!]
+      user: String,
+      repeatability: String
     ): Note
 
     deleteNote(

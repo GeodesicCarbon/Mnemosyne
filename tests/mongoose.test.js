@@ -37,8 +37,6 @@ describe('when adding notes to the database', () => {
     })
     test('fully defined note is added correctly', async () => {
       const notes = await helper.notesInDB()
-      notes[0].dateCreated = Date.parse(notes[0].dateCreated)
-      notes[0].dateDue = Date.parse(notes[0].dateDue)
       expect(typeof notes[0].id).toBe('string')
       delete notes[0].id
       delete notes[0].noteItems[0].id
