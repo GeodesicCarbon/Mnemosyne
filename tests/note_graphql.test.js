@@ -34,7 +34,7 @@ describe('when there are notes already present', () => {
       .expect('Content-Type', /application\/json/)
   })
 
-  test('correct number of blogs are returned', async () => {
+  test('correct number of notes are returned', async () => {
     const res = await api
       .post('/graphql')
       .send({ query: '{ allNotes { name } }' })

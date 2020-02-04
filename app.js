@@ -14,10 +14,12 @@ const notesRouter = require('./controllers/notes')
 
 // Ladataan GraphQL-skeemat
 const notesTypedef = require('./typedefs/notes')
+const categoriesTypedef = require('./typedefs/categories')
 const rootTypedef = require('./typedefs/root')
 
 // Ladataan GraphQL-resolverit
 const notesResolver = require('./resolvers/notes')
+const categoriesResolver = require('./resolvers/categories')
 
 // Yhdistetään MongoDB-tietokantaan
 mongoose.connect(config.MONGODB_URI, {
@@ -28,9 +30,9 @@ mongoose.connect(config.MONGODB_URI, {
 })
 
 // Luodaan yhtenäinen GraphQL-skeema
-const typeDefs = [rootTypedef, notesTypedef]
+const typeDefs = [rootTypedef, notesTypedef,categoriesTypedef]
 // Yhdistetään GraphQL-resolverit
-const resolvers = [_.merge(notesResolver, {})]
+const resolvers = [_.merge({}, categoriesResolver, notesResolver)]
 // luodaan Apollo-palvelin
 const apollo = new ApolloServer({
   typeDefs,
