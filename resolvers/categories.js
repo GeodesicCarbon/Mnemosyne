@@ -2,13 +2,45 @@
 const { UserInputError } = require('apollo-server')
 
 // Ladataan tarvittavat MongoDB -skeemat
-const Category = require('../models/note').default
+const Category = require('../models/category')
+const Note = require('../models/note').default
 
 const categoriesResolver = {
   Query: {
     allCategories: async () => {
-      return await Category.find({})
+      try {
+        const cats = await Category.find({}).populate('notes')
+        return cats
+      } catch (e) {
+        throw new UserInputError(e.message)
+      }
+      // return await Category.find({}).populate('notes')
     }
+  },
+  Mutation: {
+    addCategory: async (root, args) => {
+      const data = { ...args }
+      const notes = []
+      const category = new Category({ name: data.name })
+      if (data.notes){
+        for (const note of data.notes) {
+          const noteObj = await Note.findById(note.toString())
+          if (noteObj) {
+            noteObj.category = category._id
+            notes.push(noteObj._id)
+          }
+        }
+      }
+      category.notes = notes
+      try {
+        await category.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args
+        })
+      }
+      return await category.populate('notes').execPopulate()
+    },
   }
 }
 
