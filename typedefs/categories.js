@@ -14,7 +14,7 @@ const categoriesTypedef = gql`
   extend type Mutation {
     addCategory(
       name: String!
-      notes: [String]
+      notes: [ID!]
     ): Category
   }
 `

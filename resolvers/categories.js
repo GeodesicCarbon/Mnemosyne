@@ -1,5 +1,6 @@
 // ladataan tarvittavat moduulit
 const { UserInputError } = require('apollo-server')
+const mongoose = require('mongoose')
 
 // Ladataan tarvittavat MongoDB -skeemat
 const Category = require('../models/category')
@@ -22,12 +23,19 @@ const categoriesResolver = {
       const data = { ...args }
       const notes = []
       const category = new Category({ name: data.name })
+
       if (data.notes){
         for (const note of data.notes) {
-          const noteObj = await Note.findById(note.toString())
-          if (noteObj) {
-            noteObj.category = category._id
-            notes.push(noteObj._id)
+          try {
+            const noteObj = await Note.findById(note.toString())
+            if (noteObj) {
+              noteObj.category = category._id
+              notes.push(noteObj._id)
+            }
+          } catch (error) {
+            throw new UserInputError('Invalid Note ID', {
+              invalidArgs: args
+            })
           }
         }
       }

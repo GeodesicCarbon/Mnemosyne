@@ -88,7 +88,7 @@ describe('when there are categories already present', () => {
       .send({ query: gqlRequest })
     const returnedCategory = res.body.data.addCategory
 
-    expect(returnedCategory.id).toBeDefined()
+    expect(mongoose.Types.ObjectId.isValid(returnedCategory.id)).toBeTruthy()
     expect(returnedCategory.name).toBe(newCatName)
     expect(returnedCategory.notes).toEqual([{ name: note.name, id: note.id }])
 
@@ -96,14 +96,60 @@ describe('when there are categories already present', () => {
     const categories = await helper.categoriesInDB()
     expect(categories).toContainEqual(returnedCategory)
   })
-  //
-  // test('adding a partially defined category works correctly', async () => {
-  //
-  // })
-  //
-  // test('adding a malformed category fails', async () => {
-  //
-  // })
+
+  test('adding a partially defined category works correctly', async () => {
+    const newCatName = 'GQL partial category'
+
+    const gqlRequest = `mutation
+      {  addCategory(
+            name: "${newCatName}",
+        ) {
+          id
+          name,
+          notes {
+            id,
+            name
+          }
+        }}`
+    const res = await api
+      .post('/graphql')
+      .send({ query: gqlRequest })
+    const returnedCategory = res.body.data.addCategory
+    expect(mongoose.Types.ObjectId.isValid(returnedCategory.id)).toBeTruthy()
+    expect(returnedCategory.name).toBe(newCatName)
+    expect(returnedCategory.notes).toEqual([])
+
+    const categories = await helper.categoriesInDB()
+    expect(categories).toContainEqual(returnedCategory)
+  })
+
+  test('adding a malformed category fails', async () => {
+    const newCat = {
+      name: null,
+      notes : [999]
+    }
+
+    const gqlRequest = `mutation
+      {  addCategory(
+            name: ${newCat.name},
+            notes: ${newCat.notes}
+        ) {
+          id
+          name,
+          notes {
+            id,
+            name
+          }
+        }}`
+    const res = await api
+      .post('/graphql')
+      .send({ query: gqlRequest })
+
+    expect(res.body.data).toBeUndefined()
+    expect(res.body.errors).toBeDefined()
+
+    expect(res.body.errors[0].message).toBe('Expected type String!, found null.')
+  })
   //
   // test('Adding a new note to the category works correctly', async () => {
   //
