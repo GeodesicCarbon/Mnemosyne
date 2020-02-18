@@ -8,6 +8,7 @@ let MONGODB_URI = process.env.MONGODB_URI
 // Määritellään testiympäristölle oma tietokanta
 if (process.env.NODE_ENV === 'test') {
   MONGODB_URI = process.env.TEST_MONGODB_URI
+  PORT = process.env.BACKEND_PORT
 }
 
 // Määritellään tietokanta CI:lle
